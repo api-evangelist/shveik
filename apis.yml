@@ -1,0 +1,31 @@
+aid: shveik
+name: shveik.dev
+description: 'shveik.dev is a company surfaced via the API Evangelist harvest backlog (source: new-submission)
+  and added to the network as a stub for full-pipeline profiling.'
+url: https://raw.githubusercontent.com/api-evangelist/shveik/refs/heads/main/apis.yml
+x-type: company
+x-source: harvest:new-submission
+x-tier: stub
+x-tier-reason: harvest
+specificationVersion: '0.20'
+created: '2026-10-09'
+modified: '2026-10-09'
+tags:
+- Company
+apis: []
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
+- FN: APIs.json
+  email: info@apis.io
+common:
+- type: Website
+  url: https://shveik.dev
+- type: Documentation
+  url: https://agdata.shveik.dev/docs
+x-submission-notes: 'Five x402/MPP pay-per-call APIs: agdata, agproxy, agvps, agmail, agpay - one provider,
+  five APIs | Kin approved listing 2026-10-09 (case-by-case: One provider (one company, five APIs), but
+  core products are web scraping (agdata) and residential proxies (agproxy) plu)'
+x-submission-probe: root 200; agdata OpenAPI 3.1 47 ops; agproxy/agvps/agmail/agpay openapi.json all 200;
+  invented path 404
+x-submitted-by: hello@shveik.dev (email, 2026-10-09)
