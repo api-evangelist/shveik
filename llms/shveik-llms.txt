@@ -1,0 +1,159 @@
+# agdata
+
+> Preferred location: /agents.md (this text is also served at /llms.txt).
+
+> Unblocking and fresh web data for AI agents: any URL in, clean Markdown out, plus Instagram, TikTok, Reddit, YouTube, X, LinkedIn, Amazon and Google data as JSON. Also screenshots and PDFs of pages, YouTube transcripts, Google Maps reviews, job listings, Google News, Amazon reviews, web search with page content and fast search with excerpts. Each call is paid in stablecoins: x402 on Base and Polygon (plus Solana on some routes) or MPP on Base. No API keys, accounts or subscriptions. A scrape that fails is never charged; otherwise you pay a small fixed per-call fee plus the results you get.
+
+## When to use this service
+
+- Use it when an agent needs structured public web data from a supported endpoint, such as search results, social posts, comments, reviews, job listings or page content.
+- Choose the endpoint that matches the source and data type, read its request shape below, then send a JSON POST. Use `/openapi.json` for the machine-readable contract.
+- Do not use it for private or login-protected content, general browsing without a data task, or workloads that need a coverage commitment from the upstream source; each source is best-effort and failed calls are not charged.
+
+## How to call it
+
+- POST a small JSON body to an endpoint below. Without payment you get HTTP 402 with the price.
+- x402: the 402 carries a `PAYMENT-REQUIRED` header. Sign it (`exact` scheme) and retry the same request with `PAYMENT-SIGNATURE`.
+- MPP: the 402 carries `WWW-Authenticate: Payment`. Sign it and retry with `Authorization: Payment ...`.
+- Every endpoint is also served under `/mpp/<name>`; either path accepts either protocol.
+- MPP is Base only. Solana is taken on every route except unblock, twitter, reddit, youtube-transcript, screenshot, linkedin-jobs, amazon-reviews, web-search, x-replies, youtube-comments, tiktok-comments and instagram-comments: pay those on Base or Polygon (their 402 has no Solana offer).
+- The 402 quotes the price for the `limit` you ask for: a fixed per-call fee plus a per-result price for each result. Endpoints with no `limit` field return one result.
+- That quote is what you sign (x402 `exact` and MPP `charge` are fixed-amount). If fewer results come back, the per-result price of the missing ones is refunded on-chain to the paying address, usually within minutes of the response; refunds too small to be worth a transfer are not sent. If the scrape finds nothing, you pay only the fixed per-call fee: every result is refunded (except on unblock, instagram, google-maps, tiktok, linkedin, youtube, twitter, reddit, amazon, google-search, google-maps-reviews, youtube-transcript, screenshot, linkedin-jobs, indeed-jobs, google-news, amazon-reviews, web-search, x-replies, youtube-comments, tiktok-comments, instagram-comments and search-plus, which charge nothing when they deliver nothing). If the scrape fails, the payment is not settled and nothing is charged.
+- Response headers `X-Agdata-Results-Requested`, `X-Agdata-Results-Delivered` and `X-Agdata-Refund` (USDC base units, when a refund is due) report what happened. Ask for the `limit` you need.
+- `limit` is a whole number. A value above an endpoint's maximum is lowered to the maximum, 0 or less means the default, and the 402 quotes the value used. Free-text fields are at most 500 characters and take no control characters; a body over 64 KiB is refused (413).
+- A field an endpoint does not know is ignored on instagram, google-maps, tiktok, linkedin, youtube, twitter, reddit, amazon and google-search and refused on unblock, google-maps-reviews, youtube-transcript, screenshot, linkedin-jobs, indeed-jobs, google-news, amazon-reviews, web-search, x-replies, youtube-comments, tiktok-comments, instagram-comments and search-plus.
+- Errors the service itself produces are JSON: `{"error": code, "message": text}`. An invalid request body gets the 400 `invalid_request` once a payment is attached; without a payment it gets the 402 quote for 1 result with the header `X-Agdata-Invalid-Request: 1`, which is not worth signing: read `error` in it.
+- instagram, youtube, linkedin and amazon records carry a `normalized` object with the same keys whichever upstream provider served the request (null where a provider has no value), plus a `source` field. The provider's own fields are kept alongside it.
+- reddit and tiktok return compact records by default (reddit: posts only, at most `limit`). Send `"raw": true` to get the provider's own records instead (more fields; for tiktok some links in them expire within hours).
+
+## What to call
+
+- Who is saying what (people & social): Posts, profiles and search results from the big social platforms. Replies under a post on X. Comments under a YouTube video. Comments under a TikTok video. Comments under an Instagram post. Endpoints: `instagram`, `tiktok`, `reddit`, `twitter`, `youtube`, `linkedin`, `x-replies`, `youtube-comments`, `tiktok-comments`, `instagram-comments`.
+- What customers say (places & reviews): Google Maps places by search and location. Reviews of a place. Reviews of an Amazon product. Endpoints: `google-maps`, `google-maps-reviews`, `amazon-reviews`.
+- What is out there right now (search & news): Google Search results for a query. Current news articles for a query, in the language and country edition you pick. Web search with each result's page read as Markdown, in one call. Fast web or news search with up to 30 excerpted results, filterable by site and category. Endpoints: `google-search`, `google-news`, `web-search`, `search-plus`.
+- What is hiring, what is selling (jobs & products): LinkedIn job listings. Indeed job listings with salary and employer details. Amazon product search. Endpoints: `linkedin-jobs`, `indeed-jobs`, `amazon`.
+- Everything else: any URL in, clean Markdown out (unblocking · any page): When there is no dedicated endpoint, unblocking reads the page for you: it renders JavaScript, copes with common bot protection, and returns Markdown, HTML or text with title, language and final URL. Need to see it instead? Capture a screenshot or PDF. Need what a video says? Get its transcript. Endpoints: `unblock`, `screenshot`, `youtube-transcript`.
+
+## Limits and reliability
+
+No uptime SLA; service and upstream availability are best-effort. A quote is shown before payment, and work starts only after settlement. A request refused before settlement is not charged; product-specific refunds for partial results, orders and deals follow the docs. Paid calls have a configured upstream timeout, usually 120 seconds, with shorter route-specific caps on some routes; selected routes also cap in-flight work per target host or route. Undeliverable results are not charged and the missing portion of a short result is refunded. Free GET docs, guides, pricing and discovery pages allow 120 requests per client IP per minute and return RateLimit headers; HTTP 429 includes Retry-After. GET /health is a liveness check. HTTP 402 means payment is required, 502 means delivery failed, and 503 means the service cannot accept work; follow Retry-After when present. Report problems at /contact.
+
+## Reference documents
+
+- [API reference](/docs.md)
+- [OpenAPI](/openapi.json)
+## Try also agproxy
+
+- Need a residential IP of your own? agproxy sells residential proxy traffic by the gigabyte and a raw fetch from a residential address, paid the same way. Site: https://agproxy.shveik.dev, docs: https://agproxy.shveik.dev/agents.md
+
+## Unblocker
+
+- POST `/x402/unblock` (or `/mpp/unblock`) with `{"url":"https://example.com/","format":"markdown"}`. `format` is `markdown` (the default), `html` or `text`. Only these two fields are accepted: headers, cookies and POSTs to the target are not supported.
+- It gets through Cloudflare and other common bot protection and can render JavaScript-heavy pages (best effort: some sites still block it). Use it when your own fetch got a 403 or a challenge page; to read product, listing and review pages from sites that block plain HTTP clients; to turn JavaScript-rendered pages into Markdown for RAG; or as one paid fallback instead of running headless browsers and proxies.
+- The answer is a JSON array with one record: `url`, `finalUrl`, `statusCode`, `contentType`, `fetchedAt`, `title`, `description`, `language`, `canonicalUrl`, `jsonLd`, `format`, `content`, `contentBytes`, `truncated` (null where the page has no value). `content` is cut at 512 KiB (`truncated` is then true); a page with no Markdown comes back as `text`.
+- A page that could not be fetched (blocked, an error status or empty) is never charged: the answer is `502 {"error":"not_fetched","reason":...,"charged":false}` and the payment is not settled. There is no `limit` field: one page per call, one flat quote.
+- A call can take up to about 90 s: keep the connection open. Retrying with the same payment returns the stored result. It is not offered on Solana: pay on Base or Polygon.
+- Fetch only pages you may access; hosts are blocked on complaint (agdata@shveik.dev).
+
+## Screenshot
+
+- POST `/x402/screenshot` (or `/mpp/screenshot`) with `{"url":"https://example.com/","format":"jpeg"}`. `format` is `jpeg` (the default), `png`, `webp` or `pdf`. Optional: `fullPage`, `device` (`desktop`, `desktop_hd`, `mobile` or `tablet`), `width`, `height`, `delayMs`, `colorScheme` (`light` or `dark`), `selector` (capture only that element) and `waitForSelector`, both plain CSS selectors. Cookies, headers and proxies are not accepted.
+- The answer is a JSON array with one record: `finalUrl`, `format`, `contentType`, `width`, `height`, `fullPage`, `bytes`, `capturedAt` and `imageBase64` (standard base64: decode it to get the file). A capture over 5 MiB is not delivered: ask for `jpeg` or leave `fullPage` off.
+- It shows what a normal browser sees. It does not get past bot protection: a protected page may come back as its challenge screen. Use the unblock endpoint to read such a page's text.
+- A page that cannot be captured, renders blank or gives an image over 5 MiB is never charged: the answer is `502 {"error":"not_fetched","reason":...,"charged":false}` and the payment is not settled. One capture per call, one flat quote, no `limit` field.
+- A call can take up to about 60 s: keep the connection open. Retrying with the same payment returns the stored capture for 24 hours. It is not offered on Solana: pay on Base or Polygon.
+
+## YouTube transcript
+
+- POST `/x402/youtube-transcript` (or `/mpp/youtube-transcript`) with `{"video":"dQw4w9WgXcQ","format":"json","lang":"en"}`. `video` is an 11-character video id or the URL of one video (watch, shorts, live, embed or youtu.be; not a channel, playlist or search). `format` is `json` (the default), `text`, `srt` or `vtt`. `lang` is `en` (the default), `any`, `de`, `es`, `fr`, `it`, `ja`, `ko`, `nl`, `pt` or `ru`.
+- The answer is a JSON array with one record: `videoId`, `url`, `title`, `channelName`, `channelUrl`, `durationSeconds`, `publishedAt`, `viewCount`, `language`, `availableLanguages`, `subtitleType`, `format`, `transcript`, `segmentCount` and `truncated`. With `json`, `transcript` is a list of `{start, duration, text}` (seconds); with `text`, `srt` or `vtt` it is one string. Only published subtitles are returned, there is no speech-to-text. `any` takes the English track when the video has one, else the first; `language` says which came back.
+- A video with no subtitles in the language asked for (or an unavailable one) is never charged: `502 {"error":"not_fetched",...,"charged":false}`; try `lang` `any`. One video per call, one flat quote, no `limit` field.
+- A call can take up to about 60 s: keep the connection open. Retrying with the same payment returns the stored first answer, in the format of the first call. It is not offered on Solana: pay on Base or Polygon.
+
+## Google Maps reviews
+
+- POST `/x402/google-maps-reviews` (or `/mpp/google-maps-reviews`) with `{"place":"ChIJN1t_tDeuEmsRUsoyG83frY4","limit":10}`. `place` is a Google place_id (27 characters starting with `ChIJ` or `GhIJ`) or a Google Maps place URL (`https://www.google.com/maps/place/...` or `https://www.google.com/maps?cid=...`; a URL with only the place's name and no place id is best effort and can end as not fetched, which is not charged). `limit` is 1 to 50 (default 10), `sort` is `newest` (the default), `relevant`, `highest` or `lowest`, `language` is a Google Maps language code (default `en`).
+- The answer is a JSON array with one record per review: `reviewId`, `stars`, `text`, `textTranslated`, `originalLanguage`, `translatedLanguage`, `publishedAt`, `publishedAgo`, `likesCount`, `ownerResponse` (`text`, `publishedAt` or null), `imageCount`, `origin`, `context`, `detailedRating` and `place` (`placeId`, `name`, `address`, `category`, `rating`, `reviewsCount`, `url`). Reviewer names, ids, profile links and photos are never returned.
+- The quote is for the `limit` you ask for; if fewer reviews exist, the missing ones are refunded like any other results. A place with no reviews, or an unknown place, is never charged: `502 {"error":"not_fetched",...,"charged":false}`.
+
+## Job listings
+
+- POST `/x402/linkedin-jobs` (or `/mpp/linkedin-jobs`) with `{"query":"data engineer","location":"Prague","limit":10,"posted":"week"}`. `query` is a job title or keywords; `location`, `limit` (1 to 50, default 10) and `posted` (`24h`, `week` or `month`) are optional.
+- The answer is a JSON array with one record per job: `id`, `url`, `title`, `companyName`, `companyUrl`, `location`, `postedDate`, `postedTimeAgo`, `contractType`, `experienceLevel`, `workType`, `sector`, `salary`, `applicants`, `applyType`, `applyUrl`, `description` and `descriptionTruncated` (null where a listing has no value). Recruiter names are never returned. Nothing found, or a source that returned no data, is not charged: the answer is 502 not_fetched, said plainly, and the payment is not settled. It is not offered on Solana: pay on Base or Polygon.
+- POST `/x402/indeed-jobs` (or `/mpp/indeed-jobs`) with `{"query":"nurse","location":"Austin, TX","country":"us","limit":10,"posted":"week"}`. `query` is a job title or keywords; `location`, `country` (a two-letter code, default `us`), `limit` (1 to 50, default 10) and `posted` (`24h`, `3d`, `week` or `14d`) are optional.
+- The answer is a JSON array with one record per job: `id`, `url`, `applyUrl`, `title`, `publishedAt`, `expired`, `language`, `location` (`city`, `state`, `country`, `postalCode`), `employer` (`name`, `url`, `website`, `industry`, `employeeCount`, `rating`, `ratingsCount`), `salary` (`min`, `max`, `unit`, `currency`, or null), `jobTypes`, `benefits`, `description` and `descriptionTruncated`. Nothing found, or a source that returned no data, is not charged: the answer is 502 not_fetched, said plainly, and the payment is not settled.
+
+## Google News
+
+- POST `/x402/google-news` (or `/mpp/google-news`) with `{"query":"openai","limit":10}`. `query` is a keyword or phrase; `limit` (1 to 30, default 10), `language` (two letters, default `en`) and `country` (two letters, default `US`) are optional.
+- The answer is a JSON array with one record per article: `title`, `url`, `source`, `publishedAt` and `description`. `url` is the article's Google News link, which opens the publisher's page; the article's text is not included. Nothing found, or a source that returned no data, is not charged: the answer is 502 not_fetched, said plainly, and the payment is not settled.
+
+## Amazon reviews
+
+- POST `/x402/amazon-reviews` (or `/mpp/amazon-reviews`) with `{"product":"B079JLY5M5","limit":10}`. `product` is an ASIN or an Amazon product URL (a URL sets the marketplace). `limit` is 1 to 50 (default 10), `sort` is `recent` (the default) or `helpful`, `stars` is `all` (the default), `5` to `1`, `positive` or `critical`, `country` is `us` (the default), `uk`, `de`, `fr`, `it`, `es`, `ca` or `jp`.
+- The answer is a JSON array with one record per review: `asin`, `rating`, `title`, `text`, `date`, `country`, `verifiedPurchase`, `vine`, `helpfulCount` and `imageCount`. Reviewer names and photos are never returned.
+- The quote is for the `limit` you ask for; if fewer reviews exist, the missing ones are refunded like any other results. A product with no reviews, or an unknown one, is never charged: `502 {"error":"not_fetched",...,"charged":false}`. A call can take up to about 15 s. It is not offered on Solana: pay on Base or Polygon.
+
+## Replies to a post on X
+
+- POST `/x402/x-replies` (or `/mpp/x-replies`) with `{"url":"https://x.com/NASA/status/1234567890","limit":10}`. `url` is a post on x.com or twitter.com; `limit` is 1 to 50 (default 10).
+- The answer is a JSON array with one record per reply: `id`, `url`, `text` (cut at 4,000 characters, with `textTruncated`), `createdAt`, `lang`, `likeCount`, `replyCount`, `repostCount`, `quoteCount`, `viewCount`, `inReplyToId` and `author` (`username`, `name`, `verified`). The post itself is not in the array. Nothing found, or a source that returned no data, is not charged: the answer is 502 not_fetched, said plainly, and the payment is not settled. Fewer replies than asked for refunds the missing ones. A call takes about 20 to 50 s. It is not offered on Solana: pay on Base or Polygon.
+
+## Comments under a video or post
+
+- POST `/x402/youtube-comments` (or `/mpp/youtube-comments`) with `{"url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ","limit":20,"sort":"top"}`. `url` is a YouTube video; `limit` is 1 to 100 (default 20); `sort` is `top` (the default) or `newest`.
+- POST `/x402/tiktok-comments` (or `/mpp/tiktok-comments`) with `{"url":"https://www.tiktok.com/@nasa/video/7665075736742530317","limit":20}`. `url` is a TikTok video; `limit` is 1 to 100 (default 20).
+- POST `/x402/instagram-comments` (or `/mpp/instagram-comments`) with `{"url":"https://www.instagram.com/p/DdG4RIxIPyf/","limit":20}`. `url` is an Instagram post or reel; `limit` is 1 to 100 (default 20).
+- The answer is a JSON array with one record per comment: `id`, `text` (cut at 2,000 characters, with `textTruncated`), `postedAt`, `likeCount`, `replyCount`, `isReply`, `byOwner`, `ownerLiked` and `pinned` (null where the platform does not say). The commenter's name, handle and photo are never returned. Nothing found, or a source that returned no data, is not charged: the answer is 502 not_fetched, said plainly, and the payment is not settled. Fewer comments than asked for refunds the missing ones. A call takes up to about a minute. These routes are not offered on Solana: pay on Base or Polygon.
+
+## Search with excerpts
+
+- POST `/x402/search-plus` (or `/mpp/search-plus`) with `{"query":"fastapi websocket disconnect","limit":10,"category":"developer"}`. `query` is search keywords (not a URL; `site:`, quoted phrases and `-term` work); `limit` is 1 to 30 (default 10, billed in pages of 10); `type` is `web` (the default) or `news`; `category` is `developer`, `github` or `pdf` (web only); `include_domains` or `exclude_domains` (not both) take up to 10 hostnames.
+- The answer is a JSON array with one record per result: `position`, `title`, `url`, `description` (a query-relevant excerpt, cut at 2,000 characters), `type`, `category` and `date` (null where there is none). Nothing found, or a source that returned no data, is not charged: the answer is 502 not_fetched, said plainly, and the payment is not settled. Fewer results than asked for refunds the missing ones.
+- A call takes about a second or two. For the full text of a result use `unblock` on its URL, or `web-search` to read the top pages in one call.
+
+## Web search with page content
+
+- POST `/x402/web-search` (or `/mpp/web-search`) with `{"query":"lithium prices","limit":3}`. `query` is search keywords (not a URL; `site:` and quoted phrases work); `limit` is 1 to 5 (default 3).
+- The answer is a JSON array with one record per page that was read: `url`, `title`, `description`, `language`, `content` (the page as Markdown, cut at 20,000 characters) and `contentTruncated`. A result whose page could not be fetched is dropped and its price refunded; Nothing found, or a source that returned no data, is not charged: the answer is 502 not_fetched, said plainly, and the payment is not settled.
+- A call takes about 20 to 30 s. It is not offered on Solana: pay on Base or Polygon.
+
+## MCP
+
+- The same routes are also an MCP server (streamable HTTP, stateless, latest and earlier protocol versions): one tool per route, paid with x402 inside the tool call. Endpoint: `https://agdata.shveik.dev/mcp` (POST only, no session). `tools/list` shows the tools; call a tool without a payment to get the quote in the result, sign it, and call the tool again with the signed payment in `_meta["x402/payment"]`.
+
+## Endpoints
+
+- [POST /x402/unblock](/docs#routes): Unblocker: any URL to clean Markdown. Example body: `{"format":"markdown","url":"https://example.com/"}`
+- [POST /x402/instagram](/docs#routes): Instagram posts by profile, tag, search. Example body: `{"limit":5,"mode":"profile","query":"natgeo"}`
+- [POST /x402/google-maps](/docs#routes): Google Maps places and businesses. Example body: `{"limit":5,"location":"Prague","query":"coffee shops"}`
+- [POST /x402/tiktok](/docs#routes): TikTok videos by user, hashtag, search. Example body: `{"limit":5,"mode":"profile","query":"nasa"}`
+- [POST /x402/linkedin](/docs#routes): LinkedIn profile lookup. Example body: `{"query":"jane-example"}`
+- [POST /x402/youtube](/docs#routes): YouTube video search and channel videos. Example body: `{"limit":5,"mode":"search","query":"web scraping tutorials"}`
+- [POST /x402/twitter](/docs#routes): X (Twitter) tweets by handle or search. Example body: `{"limit":5,"mode":"profile","query":"elonmusk"}`
+- [POST /x402/reddit](/docs#routes): Reddit posts by subreddit, user, search. Example body: `{"limit":5,"mode":"hashtag","query":"programming"}`
+- [POST /x402/amazon](/docs#routes): Amazon product search. Example body: `{"limit":5,"query":"wireless keyboard"}`
+- [POST /x402/google-search](/docs#routes): Google Search results (SERP). Example body: `{"limit":5,"query":"best CRM tools"}`
+- [POST /x402/google-maps-reviews](/docs#routes): Google Maps reviews of a place. Example body: `{"limit":10,"place":"ChIJN1t_tDeuEmsRUsoyG83frY4"}`
+- [POST /x402/youtube-transcript](/docs#routes): YouTube transcript of a video. Example body: `{"format":"json","lang":"en","video":"dQw4w9WgXcQ"}`
+- [POST /x402/screenshot](/docs#routes): Website screenshot or PDF of any URL. Example body: `{"format":"jpeg","url":"https://example.com/"}`
+- [POST /x402/linkedin-jobs](/docs#routes): LinkedIn job listings for a search. Example body: `{"limit":10,"location":"Prague","query":"data engineer"}`
+- [POST /x402/indeed-jobs](/docs#routes): Indeed job listings for a search. Example body: `{"country":"us","limit":10,"location":"Austin, TX","query":"nurse"}`
+- [POST /x402/google-news](/docs#routes): Google News articles for a search. Example body: `{"limit":10,"query":"openai"}`
+- [POST /x402/amazon-reviews](/docs#routes): Amazon customer reviews of a product. Example body: `{"limit":10,"product":"B079JLY5M5"}`
+- [POST /x402/web-search](/docs#routes): Web search with page content. Example body: `{"limit":3,"query":"lithium prices"}`
+- [POST /x402/x-replies](/docs#routes): Replies to a post on X. Example body: `{"limit":10,"url":"https://x.com/NASA/status/2106751099063484493"}`
+- [POST /x402/youtube-comments](/docs#routes): Comments under a YouTube video. Example body: `{"limit":20,"url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ"}`
+- [POST /x402/tiktok-comments](/docs#routes): Comments under a TikTok video. Example body: `{"limit":20,"url":"https://www.tiktok.com/@nasa/video/7665075736742530317"}`
+- [POST /x402/instagram-comments](/docs#routes): Comments under an Instagram post. Example body: `{"limit":20,"url":"https://www.instagram.com/p/DdG4RIxIPyf/"}`
+- [POST /x402/search-plus](/docs#routes): Web or news search with excerpts. Example body: `{"category":"developer","limit":10,"query":"fastapi websocket disconnect"}`
+
+## Machine-readable
+
+- [OpenAPI 3.1](https://agdata.shveik.dev/openapi.json): full request schemas and x-payment-info
+- [x402 manifest](https://agdata.shveik.dev/.well-known/x402)
+- [Health](https://agdata.shveik.dev/health)
+
+## Feedback
+
+- Free, no payment: POST `https://agdata.shveik.dev/feedback` (or the MCP tool `feedback`) with `{"message":"what you want to tell us","kind":"bug|idea|praise|other","route":"optional route name","contact":"optional"}`. `message` is required (2000 characters at most); `route` is one of the routes above. A person reads it. Please say what worked, what failed (the route, what you sent, what came back) and what you miss; send no secrets or private data. Limited to a few messages an hour per caller.

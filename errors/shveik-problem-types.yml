@@ -1,0 +1,92 @@
+generated: '2026-10-09'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/shveik-agdata-openapi.yml
+- openapi/shveik-agmail-openapi.yml
+- openapi/shveik-agpay-openapi.yml
+- openapi/shveik-agproxy-openapi.yml
+- openapi/shveik-agvps-openapi.yml
+format: custom
+envelope:
+  media_type: application/json
+  schema: Error
+coverage:
+  operations: 77
+  statuses_declared: 10
+problems:
+- status: 400
+  title: Bad Request
+  description: 'Invalid request: a request body that is invalid (a payment was attached; without a payment an invalid
+    body gets the 402 below), or a payment'
+  operations: 77
+  media_types:
+  - application/json
+  schema: Error
+- status: 402
+  title: Payment Required
+  description: 'Payment required: the quote, with both challenges (also the answer when a payment was not accepted:
+    read error). An unpaid request with an i'
+  operations: 72
+  media_types:
+  - application/json
+  schema: null
+- status: 409
+  title: Conflict
+  description: 'The same payment is already being worked on: wait and retry with the same payment.'
+  operations: 72
+  media_types:
+  - application/json
+  schema: Error
+- status: 410
+  title: Gone
+  description: 'The stored copy of this payment''s result has expired (error expired): nothing is charged or run;
+    sign a new payment to ask again.'
+  operations: 30
+  media_types:
+  - application/json
+  schema: Error
+- status: 413
+  title: Content Too Large
+  description: The request body is over 65536 bytes.
+  operations: 72
+  media_types:
+  - application/json
+  schema: Error
+- status: 422
+  title: Unprocessable Content
+  description: Idempotency-Key was already used with a different request body.
+  operations: 72
+  media_types:
+  - application/json
+  schema: Error
+- status: 429
+  title: Too Many Requests
+  description: 'Too many calls for this host or route are in flight (Retry-After: 5): no payment was taken.'
+  operations: 30
+  media_types:
+  - application/json
+  schema: Error
+- status: 500
+  title: Internal Server Error
+  description: 'Internal error: no payment was settled for it.'
+  operations: 72
+  media_types:
+  - application/json
+  schema: Error
+- status: 502
+  title: Bad Gateway
+  description: 'Nothing was delivered: a call that delivers nothing. Error not_fetched; the payment is not settled
+    and nothing is charged. Also the answer w'
+  operations: 72
+  media_types:
+  - application/json
+  schema: Error
+- status: 503
+  title: Service Unavailable
+  description: 'Temporarily unavailable (the endpoint, a payment network or the upstream is switched off or over
+    its failure budget): no payment was taken. '
+  operations: 72
+  media_types:
+  - application/json
+  schema: Error

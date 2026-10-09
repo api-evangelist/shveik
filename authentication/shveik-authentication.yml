@@ -1,0 +1,34 @@
+generated: '2026-10-09'
+method: derived
+source: openapi/shveik-agdata-openapi.yml, openapi/shveik-agmail-openapi.yml, openapi/shveik-agpay-openapi.yml,
+  openapi/shveik-agproxy-openapi.yml, openapi/shveik-agvps-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: mpp
+  type: http
+  scheme: Payment
+  description: MPP evm/authorization credential in Authorization header. First request without
+    payment returns WWW-Authenticate challenge.
+  sources:
+  - openapi/shveik-agdata-openapi.yml
+  - openapi/shveik-agmail-openapi.yml
+  - openapi/shveik-agpay-openapi.yml
+  - openapi/shveik-agproxy-openapi.yml
+  - openapi/shveik-agvps-openapi.yml
+- name: x402
+  type: apiKey
+  in: header
+  parameter: PAYMENT-SIGNATURE
+  description: x402 exact payment credential. First request without payment returns PAYMENT-REQUIRED
+    quote.
+  sources:
+  - openapi/shveik-agdata-openapi.yml
+  - openapi/shveik-agmail-openapi.yml
+  - openapi/shveik-agpay-openapi.yml
+  - openapi/shveik-agproxy-openapi.yml
+  - openapi/shveik-agvps-openapi.yml

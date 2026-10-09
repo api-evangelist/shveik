@@ -1,0 +1,30 @@
+generated: '2026-10-09'
+method: derived
+generator: derive-vocabulary.py
+source:
+- openapi/shveik-agdata-openapi.yml
+- openapi/shveik-agmail-openapi.yml
+- openapi/shveik-agpay-openapi.yml
+- openapi/shveik-agproxy-openapi.yml
+- openapi/shveik-agvps-openapi.yml
+vocabulary:
+  name: shveik Domain Vocabulary
+  description: 'Terms declared by shveik''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-09'
+  terms:
+  - term: Scraping
+    definition: Synchronous data retrieval; each request completes in the HTTP response.
+    tags:
+    - Resource Group
+    source: openapi/shveik-agdata-openapi.yml
+  - term: Discovery
+    definition: Free, unpaid API metadata.
+    tags:
+    - Resource Group
+    source: openapi/shveik-agdata-openapi.yml
+  - term: Error
+    definition: 'Object declared by the contract with fields: error, message.'
+    tags:
+    - Object
+    source: openapi/shveik-agdata-openapi.yml#/components/schemas/Error

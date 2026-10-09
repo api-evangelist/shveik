@@ -1,0 +1,17 @@
+name: shveik rate limits
+generated: '2026-10-09'
+method: searched
+source: https://agmail.shveik.dev/llms.txt
+limit_count: 2
+limits:
+- name: agmail inbox routes per inbox
+  limit_text: 120 requests a minute per inbox
+  max: 120
+  window: 1 minute
+  scope: per-inbox
+- name: agmail inbox routes per IP
+  limit_text: 240 per minute per IP
+  max: 240
+  window: 1 minute
+  scope: per-ip
+note: Other services state free calls are rate limited per IP without numbers.

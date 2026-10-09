@@ -1,0 +1,1 @@
+{"authentication":"payment","bearer_methods_supported":[],"payment_protocols":["x402","mpp"],"resource":"https://agdata.shveik.dev","resource_documentation":"https://agdata.shveik.dev/auth.md","resource_name":"agdata","resource_signing_alg_values_supported":[]}

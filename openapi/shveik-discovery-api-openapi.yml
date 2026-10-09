@@ -1,0 +1,145 @@
+openapi: 3.2.0
+info:
+  title: Shveik Discovery API
+  version: 1.1.0
+  x-refined-note:
+  - x-api-lifecycle differs across the merged source definitions and was not carried
+  - x-guidance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Discovery across 10 of this provider''s published API definitions: agdata-openapi.json, agmail-openapi.json, agpay-openapi.json, agproxy-openapi.json, agvps-openapi.json, shveik-agdata-openapi.yml, shveik-agmail-openapi.yml, shveik-agpay-openapi.yml, shveik-agproxy-openapi.yml, shveik-agvps-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- description: Current stable API routes; legacy unversioned routes remain available.
+  url: https://agdata.shveik.dev/v1
+- description: Unversioned compatibility routes.
+  url: https://agdata.shveik.dev
+- description: Current stable API routes; legacy unversioned routes remain available.
+  url: https://agmail.shveik.dev/v1
+- description: Unversioned compatibility routes.
+  url: https://agmail.shveik.dev
+- description: Current stable API routes; legacy unversioned routes remain available.
+  url: https://agpay.shveik.dev/v1
+- description: Unversioned compatibility routes.
+  url: https://agpay.shveik.dev
+- description: Current stable API routes; legacy unversioned routes remain available.
+  url: https://agproxy.shveik.dev/v1
+- description: Unversioned compatibility routes.
+  url: https://agproxy.shveik.dev
+- description: Current stable API routes; legacy unversioned routes remain available.
+  url: https://agvps.shveik.dev/v1
+- description: Unversioned compatibility routes.
+  url: https://agvps.shveik.dev
+tags:
+- description: Free, unpaid API metadata.
+  name: Discovery
+paths:
+  /endpoints:
+    get:
+      description: Lists the paid endpoints with their paths and quote URLs, the same entries as the /v1 index. Pages hold limit entries (default 10, at most 50); when next_cursor is not null, pass it back as cursor for the next page. A malformed limit or cursor is a 400 error.
+      operationId: listEndpoints
+      parameters:
+      - description: Entries per page.
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          maximum: 50
+          minimum: 1
+          type: integer
+      - description: 'Opaque cursor: the next_cursor of the previous page.'
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  items:
+                    items:
+                      type: object
+                    type: array
+                  next_cursor:
+                    description: Cursor of the next page; null on the last page.
+                    type:
+                    - string
+                    - 'null'
+                  total:
+                    description: Number of endpoints in the whole list.
+                    minimum: 0
+                    type: integer
+                required:
+                - items
+                - next_cursor
+                - total
+                type: object
+          description: One page of endpoints.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid limit or cursor (error invalid_request).
+      summary: List the API endpoints, one page at a time
+      tags:
+      - Discovery
+    servers:
+    - description: Current stable API routes; legacy unversioned routes remain available.
+      url: https://agdata.shveik.dev/v1
+    - description: Unversioned compatibility routes.
+      url: https://agdata.shveik.dev
+components:
+  schemas:
+    Error:
+      additionalProperties: true
+      properties:
+        error:
+          description: 'a short stable code: invalid_request, invalid_payment, body_too_large, payment_in_progress, rate_limited, unavailable, upstream_failed, not_fetched, settlement_failed, expired, internal_error, not_found, method_not_allowed'
+          type: string
+        message:
+          description: a human sentence
+          type: string
+      required:
+      - error
+      - message
+      type: object
+  securitySchemes:
+    mpp:
+      description: MPP evm/authorization credential in Authorization header. First request without payment returns WWW-Authenticate challenge.
+      scheme: Payment
+      type: http
+    x402:
+      description: x402 exact payment credential. First request without payment returns PAYMENT-REQUIRED quote.
+      in: header
+      name: PAYMENT-SIGNATURE
+      type: apiKey
+x-refined-from:
+- agdata-openapi.json
+- agmail-openapi.json
+- agpay-openapi.json
+- agproxy-openapi.json
+- agvps-openapi.json
+- shveik-agdata-openapi.yml
+- shveik-agmail-openapi.yml
+- shveik-agpay-openapi.yml
+- shveik-agproxy-openapi.yml
+- shveik-agvps-openapi.yml
+x-api-versioning:
+  current: v1
+  policy: The /v1 prefix identifies the current stable API. Unversioned paths remain compatibility aliases. Breaking changes will use a new major path and be announced with a deprecation period; no fixed sunset date is promised.
+x-discovery:
+  ownershipProofs:
+  - '0x4ffdf47416ffbbc8b180b751a1c18efe380b16b65d72717852cf220c5be3efe46349ab913f124e093bbc9f37e63f9f1de31f5165af3dfe07da884705dcd27cbf1b'
+  - '0xb7d25846f7bb4548b1bae18daf930ec61b5b859d3f47d03209293afb9e967cc363cd5861f76e3dc8beef3f63d64098c314434789f0c97fffe5ea7cdc50697c4a1c'
+  - b1cms5zVangJCETnpvwDewgRKyavSgnaPqQFtL3Wrg4GdonoN13K9LHmVVfWsi8Nigi1MY7LXqpimyUeyuEV5B1
+x-service-info:
+  categories:
+  - unblocker
+  - screenshots
+  - web-scraping
+  - data
+  - ai
+  docs:
+    homepage: https://agdata.shveik.dev

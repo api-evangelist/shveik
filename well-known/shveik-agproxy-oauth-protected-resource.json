@@ -1,0 +1,1 @@
+{"authentication":"payment","bearer_methods_supported":[],"payment_protocols":["x402","mpp"],"resource":"https://agproxy.shveik.dev","resource_documentation":"https://agproxy.shveik.dev/auth.md","resource_name":"agproxy","resource_signing_alg_values_supported":[]}

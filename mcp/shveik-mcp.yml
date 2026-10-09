@@ -1,0 +1,276 @@
+name: shveik MCP servers
+generated: '2026-10-09'
+method: probed
+source: POST tools/list to https://<api>.shveik.dev/mcp (200, unauthenticated)
+deployment:
+  mode: remote
+  endpoint: https://agdata.shveik.dev/mcp
+  auth: none
+  verified: probed
+  endpoints:
+  - https://agdata.shveik.dev/mcp
+  - https://agproxy.shveik.dev/mcp
+  - https://agvps.shveik.dev/mcp
+  - https://agmail.shveik.dev/mcp
+  - https://agpay.shveik.dev/mcp
+  note: listing tools is unauthenticated; paid tool calls settle per call via x402/MPP
+tools:
+- name: unblock
+  server: agdata
+  description: 'Unblocker for AI agents: send {url} and get the page back as clean
+    Markdown, with title, description, language, final URL and HTTP status. Gets through
+    Cloudflare and other common bot protection and can render JavaScript-heavy pages.
+    Set format to html or text for those instead. A page that can''t be'
+- name: instagram
+  server: agdata
+  description: 'Instagram posts as JSON. Mode profile returns an account''s posts,
+    hashtag returns posts under a tag, and search or user take a keyword and scrape
+    the best-matching hashtag or account. Send {mode, query, limit} with limit 1-20.
+    Each post has a normalized object: caption, likes, comments_count, views,'
+- name: google-maps
+  server: agdata
+  description: 'Google Maps places for a search term, optionally narrowed to an area:
+    {"query":"coffee shops","location":"Prague","limit":5}. Up to 20 places per call.
+    Each place comes back with title, categoryName, address, phone, website, totalScore
+    (rating), reviewsCount, location (lat, lng), openingHours, price'
+- name: tiktok
+  server: agdata
+  description: 'Get TikTok videos for a username, a hashtag or a search keyword. The
+    body is {mode: profile|hashtag|search, query, limit} and limit runs 1-20. Each
+    video has id, url, text, created_at, author, plays, likes, comments, shares, saves,
+    duration_s, hashtags and music; no expiring media links. raw true re'
+- name: linkedin
+  server: agdata
+  description: Look up one public LinkedIn profile per call. Pass {query} as a username
+    (jane-example), a profile URL or a URN; there is no limit field. The normalized
+    object holds name, first_name, last_name, headline, about, location, country_code,
+    current_company, followers, connections, avatar, plus experience
+- name: youtube
+  server: agdata
+  description: 'YouTube video search by keyword, or the videos of one channel. Mode
+    search takes keywords; mode profile takes a channel handle without the @. limit
+    is 1-20 regular videos, no Shorts or live streams. Per video you get a normalized
+    object: title, description, views, likes, comments_count, duration_sec'
+- name: twitter
+  server: agdata
+  description: 'Tweets from X (Twitter) for one account or a search query. {"mode":"profile","query":"nasa"}
+    returns that account''s tweets, mode search takes keywords, and limit is 1-20.
+    Each tweet has text, createdAt, url, lang, likeCount, retweetCount, replyCount,
+    quoteCount, viewCount, isReply, isRetweet and an '
+- name: reddit
+  server: agdata
+  description: Search Reddit or read a subreddit. Use mode hashtag with a subreddit
+    name (no r/), profile with a username, or search with keywords, plus limit 1-20.
+    Every record is a post with kind, id, url, title, body, author, subreddit, upvotes,
+    comments_count, created_at, members and source; at most limit post
+- name: amazon
+  server: agdata
+  description: 'Keyword search on Amazon.com (US store): up to 20 products per call,
+    each filled in from its product page. Body: {query, limit}. The normalized object
+    per product: asin, title, brand, price, list_price, currency, rating, reviews_count,
+    in_stock, seller, image, url, description and the features bulle'
+- name: google-search
+  server: agdata
+  description: 'Google Search results (SERP) for a query, as JSON. Each record is
+    one results page with organicResults (position, title, url, displayedUrl, description),
+    paidResults, relatedQueries, peopleAlsoAsk and searchQuery metadata. Body: {query,
+    limit}. limit (1-20) is rounded up to whole pages of about 10 r'
+- name: google-maps-reviews
+  server: agdata
+  description: 'Google Maps reviews API for AI agents: send a place_id or a Google
+    Maps place URL and get up to 50 reviews as JSON: stars, text and its translation,
+    date, likes, the owner''s reply, plus the place''s name, address and rating. Sort
+    by newest, relevant, highest or lowest. Reviewer names, profiles and ph'
+- name: youtube-transcript
+  server: agdata
+  description: 'YouTube transcript API for AI agents: send a video URL or 11-character
+    id and get its published subtitles as timed JSON segments, plain text, SRT or
+    WebVTT, with title, channel, duration, views and publish date. Choose one of ten
+    subtitle languages or any. No speech-to-text. A video without subtitle'
+- name: screenshot
+  server: agdata
+  description: 'Screenshot API for AI agents: send {url} and get a JPEG, PNG, WebP
+    or PDF of the page as base64 in JSON, with final URL, byte size and pixel size.
+    Pick a desktop, mobile or tablet viewport, full page, dark mode, a delay or one
+    element by CSS selector. It shows what a normal browser sees and does not'
+- name: linkedin-jobs
+  server: agdata
+  description: 'LinkedIn jobs search API for AI agents: send a job title or keywords
+    and an optional location and get up to 50 public job listings as JSON: title,
+    company, location, posting date, employment type, seniority, salary when listed,
+    the listing''s URL and its description. Filter by how recently a job was '
+- name: indeed-jobs
+  server: agdata
+  description: 'Indeed jobs search API for AI agents: send a job title and an optional
+    location and country and get up to 50 job listings as JSON: title, employer, location,
+    posting date, job types, benefits, salary range when listed and the listing''s
+    description. Filter by how recently a job was posted; 60 countri'
+- name: google-news
+  server: agdata
+  description: 'Google News search API for AI agents: send a keyword or phrase and
+    get up to 30 current news articles as JSON: headline, publisher, publish time,
+    a short description and the article''s link. Choose the language and country edition.
+    Articles you paid for but did not get are refunded.'
+- name: amazon-reviews
+  server: agdata
+  description: 'Amazon product reviews API for AI agents: send an ASIN or an Amazon
+    product URL and get up to 50 customer reviews as JSON: rating, title, text, date,
+    verified-purchase flag and helpful votes. Sort by recent or helpful, filter by
+    stars, and pick the marketplace (US, UK, DE, FR, IT, ES, CA, JP). Revie'
+- name: web-search
+  server: agdata
+  description: 'Web search with page content for AI agents: send keywords and get
+    the top results with each page read as clean Markdown, in one call: title, URL,
+    a short description and the page''s text. Up to 5 results, each page cut at 20,000
+    characters. Pages that cannot be fetched are dropped and refunded. Pay p'
+- name: x-replies
+  server: agdata
+  description: 'Replies to a post on X (Twitter) for AI agents: send the post''s URL
+    and get the replies as JSON: text, time, likes, reposts, replies, views and the
+    author''s handle. Up to 50 replies per call. Pay per call in stablecoins; replies
+    you paid for but did not get are refunded. Not offered on Solana: pay o'
+- name: youtube-comments
+  server: agdata
+  description: 'YouTube comments API for AI agents: send the URL of a video and get
+    its comments as JSON: text, time, likes and reply count. Up to 100 comments per
+    call. The commenters'' names and handles are not returned. Pay per call in stablecoins;
+    comments you paid for but did not get are refunded. Not offered o'
+- name: tiktok-comments
+  server: agdata
+  description: 'TikTok comments API for AI agents: send the URL of a video and get
+    its comments as JSON: text, time, likes and reply count. Up to 100 comments per
+    call. The commenters'' names and handles are not returned. Pay per call in stablecoins;
+    comments you paid for but did not get are refunded. Not offered on'
+- name: instagram-comments
+  server: agdata
+  description: 'Instagram comments API for AI agents: send the URL of a post or reel
+    and get its comments as JSON: text, time, likes and reply count. Up to 100 comments
+    per call. The commenters'' names and handles are not returned. Pay per call in
+    stablecoins; comments you paid for but did not get are refunded. Not '
+- name: search-plus
+  server: agdata
+  description: 'Search API for AI agents: web or news search with up to 30 results
+    per call, each with a title, URL and a query-relevant excerpt. Filter by site,
+    or by category: developer (repos, issues, docs), GitHub or PDF. Fast, about a
+    second. Pay per call in stablecoins.'
+- name: feedback
+  server: agdata
+  description: 'Free. Tell the people who run this service what worked, what failed
+    or what you miss: a bug, an idea or a thanks. A person reads it. No payment, no
+    account; limited to a few messages an hour.'
+- name: proxy
+  server: agproxy
+  description: Residential proxy for AI agents. Pay for gigabytes of traffic and get
+    a proxy login (host, port, username, password) after payment, to use with curl,
+    a browser or any HTTP client. Choose a country, rotate the IP on every connection
+    or keep one with a session tag. A pack lasts 90 days. Pay per pack i
+- name: fetch
+  server: agproxy
+  description: 'Fetch one URL from a residential IP and get the raw response as JSON:
+    status, final URL, headers and body (text or base64), up to 10 MB. GET, HEAD or
+    POST, your own headers, an optional country. No JavaScript rendering. You pay
+    for the megabytes delivered; a fetch that fails is not charged. Pay per '
+- name: feedback
+  server: agproxy
+  description: 'Free. Tell the people who run this service what worked, what failed
+    or what you miss: a bug, an idea or a thanks. A person reads it. No payment, no
+    account; limited to a few messages an hour.'
+- name: vps-small
+  server: agvps
+  description: 'Rent a Linux server for a month and get root access: 1 vCPU, 1 GB
+    RAM, 10 GB NVMe, a dedicated IPv4 address, Ubuntu 24.04, in Germany or Finland.
+    Pay per month in stablecoins with x402 or MPP, no account and no card. The answer
+    carries a server id and secret; the IP and the root password follow in a'
+- name: vps-small-renew
+  server: agvps
+  description: Extend a small server by one to six months. Send the server id from
+    the order and the number of months; each month is billed at the plan's monthly
+    price. Pay in stablecoins with x402 or MPP. The server keeps its data and its
+    IP. A server that is not renewed stops at its expiry date. Use the renew ro
+- name: vps-medium
+  server: agvps
+  description: 'Rent a Linux server for a month and get root access: 2 vCPU, 2 GB
+    RAM, 25 GB NVMe, a dedicated IPv4 address, Ubuntu 24.04, in Germany or Finland.
+    Pay per month in stablecoins with x402 or MPP, no account and no card. The answer
+    carries a server id and secret; the IP and the root password follow in a'
+- name: vps-medium-renew
+  server: agvps
+  description: Extend a medium server by one to six months. Send the server id from
+    the order and the number of months; each month is billed at the plan's monthly
+    price. Pay in stablecoins with x402 or MPP. The server keeps its data and its
+    IP. A server that is not renewed stops at its expiry date. Use the renew r
+- name: feedback
+  server: agvps
+  description: 'Free. Tell the people who run this service what worked, what failed
+    or what you miss: a bug, an idea or a thanks. A person reads it. No payment, no
+    account; limited to a few messages an hour.'
+- name: check_name
+  server: agmail
+  description: Check whether a name is free to use as the local part of an address,
+    before buying an inbox. Free.
+- name: create_inbox
+  server: agmail
+  description: 'Buy an email address for an hour, four hours or a day: name@agmail.shveik.dev
+    with the name you choose (or a random one). Paid in stablecoins with x402: call
+    it without a payment to get the quote, then again with the signed payment in _meta.
+    The result has the inbox id and the secret (shown once, ke'
+- name: extend_inbox
+  server: agmail
+  description: Extend an inbox you own by one, four or twenty-four hours, keeping
+    its address and its mail. Paid in stablecoins with x402 like create_inbox. Needs
+    the inbox id and its secret. An inbox cannot be paid for more than 72 hours ahead.
+- name: wait_for_message
+  server: agmail
+  description: Wait until a message arrives in an inbox (up to 55 seconds) and return
+    it with its text, codes and links. Returns at once if a matching message is already
+    there. Free; needs the inbox id and secret.
+- name: get_otp
+  server: agmail
+  description: Wait for a message that carries a verification code or link and return
+    only the code and the link. Free; needs the inbox id and secret.
+- name: list_messages
+  server: agmail
+  description: List the messages of an inbox (sender, subject, size) after a sequence
+    number. Free; needs the inbox id and secret.
+- name: read_message
+  server: agmail
+  description: 'Read one message of an inbox: its text, codes, links and attachment
+    names. Free; needs the inbox id and secret.'
+- name: delete_inbox
+  server: agmail
+  description: Delete an inbox and all its mail now. There is no refund. Free; needs
+    the inbox id and secret.
+- name: feedback
+  server: agmail
+  description: 'Free. Tell the people who run this service what worked, what failed
+    or what you miss: a bug, an idea or a thanks. A person reads it. No payment, no
+    account; limited to a few messages an hour.'
+- name: create_deal
+  server: agpay
+  description: 'Open an escrow deal with a seller agent. Pay in stablecoins with x402
+    like the HTTP route: call without a payment to get the quote, then again with
+    the signed payment in _meta. The answer is the receipt; act only on state funded.
+    Choose the buyer secret yourself and send only its SHA-256 hash as sec'
+- name: get_deal
+  server: agpay
+  description: 'Get the status of a deal: its state, amounts, deadlines and outcome.
+    Free; needs only the deal id. Act only on state funded.'
+- name: list_deals
+  server: agpay
+  description: List the deals of an address, as seller or as buyer, newest first.
+    Free; give exactly one of seller or buyer, an address. Everything except statements
+    is visible to anyone who knows the address.
+- name: confirm_deal
+  server: agpay
+  description: 'Confirm a deal as its buyer: the seller is paid now and the deal closes.
+    Free; needs the deal id and the buyer secret. Confirming is final.'
+- name: add_statement
+  server: agpay
+  description: Add a statement to a deal as its buyer, up to 2000 characters. Free;
+    needs the deal id, the buyer secret and the text. Statements are visible to the
+    operator only.
+- name: feedback
+  server: agpay
+  description: 'Free. Tell the people who run this service what worked, what failed
+    or what you miss: a bug, an idea or a thanks. A person reads it. No payment, no
+    account; limited to a few messages an hour.'

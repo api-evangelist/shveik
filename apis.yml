@@ -1,31 +1,148 @@
 aid: shveik
-name: shveik.dev
-description: 'shveik.dev is a company surfaced via the API Evangelist harvest backlog (source: new-submission)
-  and added to the network as a stub for full-pipeline profiling.'
+name: shveik
+description: 'shveik.dev runs five pay-per-call APIs built for AI agents and paid per request in stablecoins
+  over x402 and MPP, with no account or subscription: agdata (unblocking and web data - any URL as Markdown,
+  screenshots, transcripts, maps and social data), agproxy (residential proxy packs and raw fetch), agvps
+  (monthly Linux servers), agmail (hourly email inboxes with OTP extraction) and agpay (escrow-style holds
+  between agents). Each ships an OpenAPI 3.1 contract and a remote MCP server.'
 url: https://raw.githubusercontent.com/api-evangelist/shveik/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:new-submission
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-09 (local-v5; was harvest)
 specificationVersion: '0.20'
 created: '2026-10-09'
 modified: '2026-10-09'
 tags:
 - Company
-apis: []
+- AI Agents
+- x402
+- Web Scraping
+- Proxies
+- Email
+- VPS
+- Escrow
+- MCP
+- Stablecoins
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: MCPServer
+  url: https://agdata.shveik.dev/mcp
+- type: MCPServer
+  url: https://agproxy.shveik.dev/mcp
+- type: MCPServer
+  url: https://agvps.shveik.dev/mcp
+- type: MCPServer
+  url: https://agmail.shveik.dev/mcp
+- type: MCPServer
+  url: https://agpay.shveik.dev/mcp
+- type: RateLimits
+  url: rate-limits/shveik-rate-limits.yml
+- type: AgenticAccess
+  url: agentic-access/shveik-agentic-access.yml
+- type: Plans
+  url: plans/shveik-plans-pricing.yml
+- type: Spectral
+  url: rules/shveik-rules.yml
+- type: JSONLD
+  url: json-ld/shveik-context.jsonld
+- type: Vocabulary
+  url: vocabulary/shveik-vocabulary.yml
+- type: DataModel
+  url: data-model/shveik-data-model.yml
+- type: Idempotency
+  url: conventions/shveik-conventions.yml
+- type: Conventions
+  url: conventions/shveik-conventions.yml
+- type: ErrorCatalog
+  url: errors/shveik-problem-types.yml
+- type: Conformance
+  url: conformance/shveik-conformance.yml
+- type: LLMsTxt
+  url: llms/shveik-llms.txt
+- type: AgentCard
+  url: a2a/shveik-a2a.yml
+- type: WellKnown
+  url: well-known/shveik-well-known.yml
+- type: Hosts
+  url: hosts/shveik-hosts.yml
+- type: Authentication
+  url: authentication/shveik-authentication.yml
+- type: DomainSecurity
+  url: security/shveik-domain-security.yml
 - type: Website
   url: https://shveik.dev
 - type: Documentation
   url: https://agdata.shveik.dev/docs
+- type: Pricing
+  url: https://agdata.shveik.dev/pricing
+- type: TermsOfService
+  url: https://agdata.shveik.dev/terms
+- type: PrivacyPolicy
+  url: https://agdata.shveik.dev/privacy
+- type: Support
+  url: https://agdata.shveik.dev/contact
+- type: Blog
+  url: https://blog.shveik.dev
+- type: APIReference
+  url: https://agdata.shveik.dev/docs
+apis:
+- aid: shveik:shveik-discovery-api
+  name: shveik Discovery API
+  description: Free, unpaid API metadata.
+  humanURL: https://agdata.shveik.dev/docs
+  baseURL: https://agdata.shveik.dev/v1
+  tags:
+  - Discovery
+  properties:
+  - type: OpenAPI
+    url: openapi/shveik-discovery-api-openapi.yml
+  - type: LLMsTxt
+    url: https://agdata.shveik.dev/llms.txt
+  - type: LLMsTxt
+    url: https://agproxy.shveik.dev/llms.txt
+  - type: LLMsTxt
+    url: https://agvps.shveik.dev/llms.txt
+  - type: LLMsTxt
+    url: https://agmail.shveik.dev/llms.txt
+  - type: LLMsTxt
+    url: https://agpay.shveik.dev/llms.txt
+  - type: JSONSchema
+    url: json-schema/shveik-error-schema.json
+- aid: shveik:shveik-scraping-api
+  name: shveik Scraping API
+  description: Synchronous data retrieval; each request completes in the HTTP response.
+  humanURL: https://agdata.shveik.dev/docs
+  baseURL: https://agdata.shveik.dev/v1
+  tags:
+  - Scraping
+  properties:
+  - type: OpenAPI
+    url: openapi/shveik-scraping-api-openapi.yml
+  - type: LLMsTxt
+    url: https://agdata.shveik.dev/llms.txt
+  - type: LLMsTxt
+    url: https://agproxy.shveik.dev/llms.txt
+  - type: LLMsTxt
+    url: https://agvps.shveik.dev/llms.txt
+  - type: LLMsTxt
+    url: https://agmail.shveik.dev/llms.txt
+  - type: LLMsTxt
+    url: https://agpay.shveik.dev/llms.txt
+  - type: JSONSchema
+    url: json-schema/shveik-error-schema.json
 x-submission-notes: 'Five x402/MPP pay-per-call APIs: agdata, agproxy, agvps, agmail, agpay - one provider,
   five APIs | Kin approved listing 2026-10-09 (case-by-case: One provider (one company, five APIs), but
   core products are web scraping (agdata) and residential proxies (agproxy) plu)'
 x-submission-probe: root 200; agdata OpenAPI 3.1 47 ops; agproxy/agvps/agmail/agpay openapi.json all 200;
   invented path 404
 x-submitted-by: hello@shveik.dev (email, 2026-10-09)
+x-enrichment:
+  date: '2026-10-09'
+  status: enriched
+  artifacts_added: 20
+  pass: local-v5

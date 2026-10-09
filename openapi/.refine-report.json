@@ -1,0 +1,45 @@
+{
+  "provider": "shveik",
+  "sources": [
+    "_original/agdata-openapi.json",
+    "_original/agmail-openapi.json",
+    "_original/agpay-openapi.json",
+    "_original/agproxy-openapi.json",
+    "_original/agvps-openapi.json",
+    "shveik-agdata-openapi.yml",
+    "shveik-agmail-openapi.yml",
+    "shveik-agpay-openapi.yml",
+    "shveik-agproxy-openapi.yml",
+    "shveik-agvps-openapi.yml"
+  ],
+  "outputs": [
+    "shveik-discovery-api-openapi.yml",
+    "shveik-scraping-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/shveik-agdata-openapi.yml",
+    "archived openapi/shveik-agmail-openapi.yml",
+    "archived openapi/shveik-agpay-openapi.yml",
+    "archived openapi/shveik-agproxy-openapi.yml",
+    "archived openapi/shveik-agvps-openapi.yml"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (5 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "agdata-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "agmail-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "agpay-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "agproxy-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "agvps-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shveik-agdata-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shveik-agmail-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shveik-agpay-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shveik-agproxy-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shveik-agvps-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "tag 'Discovery' spans 10 source specs (agdata-openapi.json, agmail-openapi.json, agpay-openapi.json, agproxy-openapi.json, agvps-openapi.json, shveik-agdata-openapi.yml, shveik-agmail-openapi.yml, shveik-agpay-openapi.yml, shveik-agproxy-openapi.yml, shveik-agvps-openapi.yml): per-path servers applied",
+    "tag 'Scraping' spans 10 source specs (agdata-openapi.json, agmail-openapi.json, agpay-openapi.json, agproxy-openapi.json, agvps-openapi.json, shveik-agdata-openapi.yml, shveik-agmail-openapi.yml, shveik-agpay-openapi.yml, shveik-agproxy-openapi.yml, shveik-agvps-openapi.yml): per-path servers applied",
+    "apis.yml register: written (+2 apis, 2 total)"
+  ],
+  "skipped": []
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/shveik/main/json-schema/shveik-error-schema.json",
+  "title": "Error",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/shveik-agpay-openapi.yml#/components/schemas/Error",
+  "additionalProperties": true,
+  "properties": {
+    "error": {
+      "description": "a short stable code: invalid_request, invalid_payment, body_too_large, payment_in_progress, rate_limited, unavailable, upstream_failed, not_fetched, settlement_failed, expired, internal_error, not_found, method_not_allowed",
+      "type": "string"
+    },
+    "message": {
+      "description": "a human sentence",
+      "type": "string"
+    }
+  },
+  "required": [
+    "error",
+    "message"
+  ],
+  "type": "object"
+}

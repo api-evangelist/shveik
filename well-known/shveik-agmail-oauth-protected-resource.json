@@ -1,0 +1,1 @@
+{"authentication":"payment","bearer_methods_supported":[],"payment_protocols":["x402","mpp"],"resource":"https://agmail.shveik.dev","resource_documentation":"https://agmail.shveik.dev/auth.md","resource_name":"agmail","resource_signing_alg_values_supported":[]}
