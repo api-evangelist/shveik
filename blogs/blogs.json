@@ -1,0 +1,14 @@
+{
+  "repo": "shveik",
+  "feeds": [
+    {
+      "source": "https://blog.shveik.dev",
+      "feed_url": "https://blog.shveik.dev/feed.xml",
+      "title": "",
+      "saved": 2,
+      "method": "discovered"
+    }
+  ],
+  "post_count": 2,
+  "fetched": "2026-10-10T13:15:00Z"
+}
