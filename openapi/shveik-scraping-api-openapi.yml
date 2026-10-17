@@ -5,7 +5,7 @@ info:
   x-refined-note:
   - x-api-lifecycle differs across the merged source definitions and was not carried
   - x-guidance differs across the merged source definitions and was not carried
-  description: 'Operations tagged Scraping across 10 of this provider''s published API definitions: agdata-openapi.json, agmail-openapi.json, agpay-openapi.json, agproxy-openapi.json, agvps-openapi.json, shveik-agdata-openapi.yml, shveik-agmail-openapi.yml, shveik-agpay-openapi.yml, shveik-agproxy-openapi.yml, shveik-agvps-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Scraping across 5 of this provider''s published API definitions: agdata-openapi.json, agmail-openapi.json, agpay-openapi.json, agproxy-openapi.json, agvps-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - description: Current stable API routes; legacy unversioned routes remain available.
   url: https://agdata.shveik.dev/v1
@@ -11260,6 +11260,15 @@ paths:
     - description: Unversioned compatibility routes.
       url: https://agvps.shveik.dev
 components:
+  parameters:
+    IdempotencyKey:
+      description: Optional retry key; reusing it with a different request body returns 422.
+      in: header
+      name: Idempotency-Key
+      required: false
+      schema:
+        maxLength: 128
+        type: string
   schemas:
     Error:
       additionalProperties: true
@@ -11274,15 +11283,6 @@ components:
       - error
       - message
       type: object
-  parameters:
-    IdempotencyKey:
-      description: Optional retry key; reusing it with a different request body returns 422.
-      in: header
-      name: Idempotency-Key
-      required: false
-      schema:
-        maxLength: 128
-        type: string
   securitySchemes:
     mpp:
       description: MPP evm/authorization credential in Authorization header. First request without payment returns WWW-Authenticate challenge.
@@ -11299,11 +11299,6 @@ x-refined-from:
 - agpay-openapi.json
 - agproxy-openapi.json
 - agvps-openapi.json
-- shveik-agdata-openapi.yml
-- shveik-agmail-openapi.yml
-- shveik-agpay-openapi.yml
-- shveik-agproxy-openapi.yml
-- shveik-agvps-openapi.yml
 x-api-versioning:
   current: v1
   policy: The /v1 prefix identifies the current stable API. Unversioned paths remain compatibility aliases. Breaking changes will use a new major path and be announced with a deprecation period; no fixed sunset date is promised.
