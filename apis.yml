@@ -119,6 +119,8 @@ apis:
   humanURL: https://agdata.shveik.dev/docs
   baseURL: https://agdata.shveik.dev/v1
   tags:
+  - Web Scraping
+  tags_raw:
   - Scraping
   properties:
   - type: OpenAPI
